@@ -4,7 +4,8 @@ import pickle5 as pickle
 np.seterr(over='ignore')
 learningRate = 0.1
 
-#These are  dtat normalization functions
+#These are  data normalization functions
+
 def minmax(input,derivative=False):
     return input/(np.amax(input)-np.amin(input)) if derivative else (input-np.amin(input))/(np.amax(input)-np.amin(input))
 
@@ -65,14 +66,14 @@ class Layer:
     #Args: number of inputs, number of perceptrons in layer,learning rate, activation function
     def __init__(self,numip,numpercep,learning_rate=0.1,activation='relu'):
         # self.input = input #inputs to layer
-        self.numpercep = numpercep #number of perceptrons in layer
-        self.activation = activation #activation function to be used
-        self.lr = learning_rate #learning rate to be used
-        self.We = np.random.rand(numpercep, numip)/10 #weights array
-        # self.We = np.zeros((numpercep, numip))  # weights array
-        self.Bi = np.random.rand(numpercep) #bias array
-        self.out = np.empty(numpercep) #output array
-        self.z = np.empty(numpercep) #intermidiate calculation array
+        self.numpercep = numpercep                              #number of perceptrons in layer
+        self.activation = activation                            #activation function to be used
+        self.lr = learning_rate                                 #learning rate to be used
+        self.We = np.random.rand(numpercep, numip)/10           #weights array
+        # self.We = np.zeros((numpercep, numip))                # weights array
+        self.Bi = np.random.rand(numpercep)                     #bias array
+        self.out = np.empty(numpercep)                          #output array
+        self.z = np.empty(numpercep)                            #intermidiate calculation array
 
     #forward propogation
     def train(self,input,a=0.3):
@@ -102,16 +103,16 @@ class Layer:
             self.deract =  linear(self.z,a=a,derivative=True)
         elif self.activation == 'Lrelu':
             self.deract =  Lrelu(self.z,derivative=True)
-        self.delbi = error * self.deract#change in bias
-        self.delwe = np.array([self.input]).T*self.delbi #change in weights
-        self.delip = np.dot(self.delbi,self.We) #error for previous layer
-        self.We = np.add(self.We.T,learningRate*self.delwe) #change weights
-        self.Bi = np.add(self.Bi, learningRate*self.delbi) #cjange biases
+        self.delbi = error * self.deract                #change in bias
+        self.delwe = np.array([self.input]).T*self.delbi                #change in weights
+        self.delip = np.dot(self.delbi,self.We)                 #error for previous layer
+        self.We = np.add(self.We.T,learningRate*self.delwe)                 #change weights
+        self.Bi = np.add(self.Bi, learningRate*self.delbi)              #change biases
         self.We = self.We.T
         self.Bi = self.Bi.T[:,0]
 
     def calcZ(self,input,weight,bias):
-        return np.dot(weight,input)+bias #intermidiate calculation
+        return np.dot(weight,input)+bias                #intermidiate calculation
 
     #Used to save learnable parameters of the layer
     def save(self,name,filepath=''):
